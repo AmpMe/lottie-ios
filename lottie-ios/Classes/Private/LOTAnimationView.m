@@ -706,15 +706,15 @@ static NSString * const kCompContainerAnimationKey = @"play";
 - (void)animationDidStop:(CAAnimation *)anim finished:(BOOL)complete {
   if ([_compContainer animationForKey:kCompContainerAnimationKey] == anim &&
       [anim isKindOfClass:[CABasicAnimation class]]) {
-    CABasicAnimation *playAnimation = (CABasicAnimation *)anim;
-    NSNumber *frame = _compContainer.presentationLayer.currentFrame;
     if (complete) {
+      CABasicAnimation *playAnimation = (CABasicAnimation *)anim;
+      NSNumber *frame = _compContainer.presentationLayer.currentFrame;
       // Set the final frame based on the animation to/from values. If playing forward, use the
       // toValue otherwise we want to end on the fromValue.
       frame = [self _isSpeedNegative] ? (NSNumber *)playAnimation.toValue : (NSNumber *)playAnimation.fromValue;
+      [self _removeCurrentAnimationIfNecessary];
+      [self setProgressWithFrame:frame callCompletionIfNecessary:NO];
     }
-    [self _removeCurrentAnimationIfNecessary];
-    [self setProgressWithFrame:frame callCompletionIfNecessary:NO];
     [self _callCompletionIfNecessary:complete];
   }
 }
